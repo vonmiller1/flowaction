@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Flow, Task, TaskStatus, Theme, AIResponse } from './types';
 import { generateActionFlow } from './services/geminiService';
@@ -65,7 +66,8 @@ const App: React.FC = () => {
       const result = await generateActionFlow(prompt);
       handleAIResult(result);
     } catch (err: any) {
-      setError("AI encountered an issue building your flow. Try again.");
+      console.error("Workflow Generation Error:", err);
+      setError(`AI encountered an issue building your flow: ${err.message || 'Check console for details'}`);
     } finally {
       setIsLoading(false);
     }

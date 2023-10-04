@@ -1,9 +1,19 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { AIResponse } from "../types";
 
+/**
+ * Ensures the API Key is present before making requests
+ */
+function getAIClient() {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please ensure process.env.API_KEY is configured.");
+  }
+  return new GoogleGenAI({ apiKey });
+}
+
 export async function enhancePrompt(prompt: string): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = getAIClient();
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
@@ -20,15 +30,15 @@ export async function enhancePrompt(prompt: string): Promise<string> {
 }
 
 export async function extractTasksFromImage(base64Image: string): Promise<AIResponse> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = getAIClient();
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
-    contents: {
+    contents: [{
       parts: [
         { inlineData: { mimeType: "image/jpeg", data: base64Image } },
         { text: "Analyze these handwritten notes and extract a structured action plan. Decompose them into tasks with logical dependencies, priority, and estimated duration (minutes/hours/days/weeks)." }
       ]
-    },
+    }],
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -69,12 +79,12 @@ export async function extractTasksFromImage(base64Image: string): Promise<AIResp
 }
 
 export async function generateActionFlow(prompt: string): Promise<AIResponse> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = getAIClient();
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: "gemini-3-pro-preview", // Upgraded to Pro for complex planning tasks
     contents: [{ parts: [{ text: `Decompose the following goal into a structured action plan: "${prompt}"` }] }],
     config: {
-      systemInstruction: "You are a world-class project manager. Breakdown goals into actionable tasks. Use appropriate units (minutes, hours, days, weeks) based on complexity.",
+      systemInstruction: "You are a world-class project manager. Breakdown goals into actionable tasks. Use appropriate units (minutes, hours, days, weeks) based on complexity. Ensure dependencies refer to the exact 'title' of previous tasks.",
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,

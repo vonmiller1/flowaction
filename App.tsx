@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Flow, Task, TaskStatus, Theme, AIResponse } from './types';
 import { generateActionFlow } from './services/geminiService';
@@ -67,7 +66,9 @@ const App: React.FC = () => {
       handleAIResult(result);
     } catch (err: any) {
       console.error("Workflow Generation Error:", err);
-      setError(`AI encountered an issue building your flow: ${err.message || 'Check console for details'}`);
+      // More descriptive error for the user
+      const msg = err.message || 'Check browser console for technical details.';
+      setError(`AI encountered an issue: ${msg}`);
     } finally {
       setIsLoading(false);
     }
@@ -148,7 +149,12 @@ const App: React.FC = () => {
             <div className="w-full max-w-5xl animate-in zoom-in duration-700">
               <AIComposer onGenerate={handleGenerate} isLoading={isLoading} onOpenScanner={() => setIsScannerOpen(true)} />
             </div>
-            {error && <div className="mt-8 text-rose-500 font-black bg-white/50 px-6 py-3 rounded-2xl border-2 border-rose-200 animate-pulse">{error}</div>}
+            {error && (
+              <div className="mt-8 text-rose-500 font-black bg-rose-50/90 px-8 py-4 rounded-2xl border-2 border-rose-200 animate-in fade-in slide-in-from-top-4 shadow-xl max-w-2xl text-center">
+                <i className="fa-solid fa-triangle-exclamation mr-2"></i>
+                {error}
+              </div>
+            )}
           </div>
         )}
 

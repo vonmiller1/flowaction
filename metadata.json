@@ -1,0 +1,8 @@
+{
+  "name": "Copy of ActionFlow",
+  "description": "An AI-powered workflow automation and task management platform that decomposes complex goals into executable visual flows using Gemini.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

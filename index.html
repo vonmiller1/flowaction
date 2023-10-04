@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ActionFlow - AI Action Planner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+      transition: background-color 0.5s ease;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: currentColor; opacity: 0.2; border-radius: 10px; }
+    
+    /* Theme Definitions */
+    .theme-peach { 
+      --bg: #fffafb; 
+      --primary: #fb7185; 
+      --accent: #facc15; 
+      --card: #ffffff; 
+      --text: #4a3434; 
+      --border: #fb7185; 
+      --input-bg: #fff5f6;
+      --dropdown-bg: #ffffff;
+      --element-bg: #fff1f2;
+    }
+    .theme-onyx { 
+      --bg: #0d0d0d; 
+      --primary: #facc15; 
+      --accent: #334155; 
+      --card: #171717; 
+      --text: #f8fafc; 
+      --border: #facc15;
+      --input-bg: #262626;
+      --dropdown-bg: #1a1a1a;
+      --element-bg: #262626;
+    }
+    .theme-cyber { 
+      --bg: #0f0720; 
+      --primary: #22d3ee; 
+      --accent: #ffffff; 
+      --card: #1a0b36; 
+      --text: #e0e7ff; 
+      --border: #22d3ee; 
+      --input-bg: #1a0b36;
+      --dropdown-bg: #1a0b36;
+      --element-bg: #22204a;
+    }
+
+    .app-container { background-color: var(--bg); color: var(--text); position: relative; overflow: hidden; }
+    .high-contrast-card { background: var(--card); border: 2px solid var(--border); }
+    .primary-btn { background: var(--primary); color: #000; font-weight: 800; }
+    .theme-peach .primary-btn, .theme-cyber .primary-btn { color: #fff; }
+
+    .sunset-gradient {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+    }
+    
+    /* Peach Floating elements */
+    .peach-petal {
+      position: absolute;
+      background: var(--accent);
+      width: 12px;
+      height: 12px;
+      border-radius: 50% 0 50% 0;
+      opacity: 0.3;
+      filter: blur(1px);
+      z-index: 0;
+      pointer-events: none;
+      animation: float-petal 15s linear infinite;
+    }
+    @keyframes float-petal {
+      0% { transform: translateY(110vh) rotate(0deg); left: 10%; opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-10vh) rotate(360deg); left: 90%; opacity: 0; }
+    }
+
+    /* Batman Watermark */
+    .bat-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.04;
+      width: 80%;
+      max-width: 600px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Blobs */
+    .bg-blob {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: 0;
+      opacity: 0.4;
+      pointer-events: none;
+      animation: drift 30s infinite alternate ease-in-out;
+    }
+    @keyframes drift {
+      from { transform: translate(-10%, -10%) scale(1); }
+      to { transform: translate(25%, 15%) scale(1.2); }
+    }
+
+    .theme-peach .blob-1 { background: #ffe4e6; top: -10%; left: -10%; }
+    .theme-peach .blob-2 { background: #fef9c3; bottom: -10%; right: -10%; animation-delay: -7s; }
+    
+    .theme-cyber .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .dependency-line {
+      stroke: var(--primary);
+      stroke-width: 2;
+      stroke-dasharray: 6,4;
+      opacity: 0.5;
+      fill: none;
+    }
+
+    /* Transition for smoother theme swapping */
+    * { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body class="min-h-screen">
+  <div id="root"></div>
+</body>
+</html>
